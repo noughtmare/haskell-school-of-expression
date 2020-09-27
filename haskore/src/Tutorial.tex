@@ -1,0 +1,112 @@
+% For DVIWindo:
+\documentstyle[11pt,fleqn]{article}
+
+\input texnansi
+\input lcdlatex.tex
+\input epsfsafe.tex
+
+% Old Latex:
+% \documentstyle[epsf,11pt]{article}
+
+\textheight=8.5in
+\textwidth=6.5in
+\topmargin=-.3in
+\oddsidemargin=0in
+\evensidemargin=0in
+\parskip=6pt plus2pt minus2pt
+
+% Use these for extended mode:
+\newcommand{\extended}[1]{#1}
+\newcommand{\basic}[1]{}
+
+% Use these for basic mode:
+% \newcommand{\extended}[1]{}
+% \newcommand{\basic}[1]{#1}
+
+\newtheorem{prop}{Proposition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+
+\newcommand{\ignore}[1]{}
+\newcommand{\out}[1]{}
+
+\begin{document}
+
+\title{Haskore Music Tutorial}
+
+\author{Paul Hudak\\
+Yale University\\
+Department of Computer Science\\
+New Haven, CT 06520\\
+{\tt paul.hudak@yale.edu}}
+
+\date{February 14, 1997\\
+(Revised November 1998)\\
+(Revised February 2000)}
+
+\maketitle
+
+% the introduction
+\input{Intro.tex}
+
+% the structure of Haskore
+\input{HaskoreLoader.lhs}
+
+% the basics
+\input{Basics.lhs}
+
+% all about performance and players
+\input{Performance.lhs}
+
+% translating a performance into Midi
+\basic{\input{BasicHaskToMidi.lhs}}
+\extended{\input{HaskToMidi.lhs}}
+
+% the MidiFile datatype
+\basic{\input{BasicMidifile.lhs}}
+\extended{\input{Midifile.lhs}}
+
+% writing Midi to files
+\input{outputMidi.lhs}
+
+% loading Midi files
+\input{loadMidi.lhs}
+
+% translating Midi to Haskore
+\input{readMidi.lhs}
+
+% a brief treatise on chords
+\input{Chords.lhs}
+
+% equivalence of musical values
+\input{Equiv.tex}
+
+% CSound
+\newpage
+\input{CSound.lhs}
+
+% related work
+\input{Related.tex}
+
+\appendix
+
+% random test routines
+\input{TestHaskore.lhs}
+
+% random examples
+\input{HaskoreExamples.lhs}
+
+% Chick Corea's Child Song 6
+\input{ChildSong6.lhs}
+
+% some self-similar (fractal) music
+\input{SelfSim.lhs}
+
+% table of General Midi assignments
+\input{GeneralMidi.lhs}
+
+\bibliographystyle{alpha}
+\bibliography{/homes/systems/hudak/Bib/old}
+
+\end{document}

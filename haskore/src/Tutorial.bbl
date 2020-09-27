@@ -1,0 +1,113 @@
+\begin{thebibliography}{HMGW96}
+
+\bibitem[AK92]{formula}
+D.P. Anderson and R.~Kuivila.
+\newblock Formula: A programming language for expressive computer music.
+\newblock In Denis Baggi, editor, {\em Computer Generated Music}. IEEE Computer
+  Society Press, 1992.
+
+\bibitem[Ary94]{arya94}
+K.~Arya.
+\newblock A functional animation starter-kit.
+\newblock {\em Journal of Functional Programming}, 4(1):1--18, 1994.
+
+\bibitem[Bal92]{balaban92}
+M.~Balaban.
+\newblock Music structures: Interleaving the temporal and hierarchical aspects
+  of music.
+\newblock In M.~Balaban, K.~Ebcioglu, and O.~Laske, editors, {\em Understanding
+  Music With AI}, pages 110--139. AAAI Press, 1992.
+
+\bibitem[BW88]{birdwadler88}
+R.~Bird and P.~Wadler.
+\newblock {\em Introduction to Functional Programming}.
+\newblock Prentice Hall, New York, 1988.
+
+\bibitem[Col84]{moxie}
+D.~Collinge.
+\newblock Moxie: A languge for computer music performance.
+\newblock In {\em Proc. Int'l Computer Music Conference}, pages 217--220.
+  Computer Music Association, 1984.
+
+\bibitem[CR84]{formes}
+P.~Cointe and X.~Rodet.
+\newblock Formes: an object and time oriented system for music composition and
+  synthesis.
+\newblock In {\em Proceedings of the 1984 ACM Symposium on Lisp and Functional
+  Programmming}, pages 85--95. ACM, 1984.
+
+\bibitem[Dan89]{canon}
+R.B. Dannenberg.
+\newblock The {C}anon score language.
+\newblock {\em Computer Music Journal}, 13(1):47--56, 1989.
+
+\bibitem[DFV92]{fugue}
+R.B. Dannenberg, C.L. Fraley, and P.~Velikonja.
+\newblock A functional language for sound synthesis with behavioral abstraction
+  and lazy evaluation.
+\newblock In Denis Baggi, editor, {\em Computer Generated Music}. IEEE Computer
+  Society Press, 1992.
+
+\bibitem[For73]{forte}
+A.~Forte.
+\newblock {\em The Structure of Atonal Music}.
+\newblock Yale University Press, New Haven, CT, 1973.
+
+\bibitem[HB95]{hudakberger95}
+P.~Hudak and J.~Berger.
+\newblock A model of performance, interaction, and improvisation.
+\newblock In {\em Proceedings of International Computer Music Conference}.
+  Int'l Computer Music Association, 1995.
+
+\bibitem[Hen82]{henderson82}
+P.~Henderson.
+\newblock Functional geometry.
+\newblock In {\em Proceedings of the 1982 ACM Symposium on Lisp and Functional
+  Programmming}. ACM, 1982.
+
+\bibitem[HF92]{haskell-tutorial}
+P.~Hudak and J.~Fasel.
+\newblock A gentle introduction to {H}askell.
+\newblock {\em ACM SIGPLAN Notices}, 27(5), May 1992.
+
+\bibitem[HMGW96]{haskore}
+P.~Hudak, T.~Makucevich, S.~Gadde, and B.~Whong.
+\newblock Haskore music notation -- an algebra of music.
+\newblock {\em Journal of Functional Programming}, 6(3), June 1996.
+\newblock available via\\ {\tt
+  ftp://nebula.systemsz.cs.yale.edu/pub/yale-fp/papers/haskore/hmn-lhs.ps}.
+
+\bibitem[HS92]{scoresynth}
+G.~Haus and A.~Sametti.
+\newblock Scoresynth: A system for the synthesis of music scores based on petri
+  nets and a music algebra.
+\newblock In Denis Baggi, editor, {\em Computer Generated Music}. IEEE Computer
+  Society Press, 1992.
+
+\bibitem[IMA90]{midi}
+Midi 1.0 detailed specification: Document version 4.1.1, February 1990.
+
+\bibitem[JB91]{musickit}
+D.~Jaffe and L.~Boynton.
+\newblock An overview of the sound and music kits for the {NeXT} computer.
+\newblock In S.T. Pope, editor, {\em The Well-Tempered Object}, pages 107--118.
+  MIT Press, 1991.
+
+\bibitem[OFLB94]{grame94}
+O.~Orlarey, D.~Fober, S.~Letz, and M.~Bilton.
+\newblock Lambda calculus and music calculi.
+\newblock In {\em Proceedings of International Computer Music Conference}.
+  Int'l Computer Music Association, 1994.
+
+\bibitem[Sch83]{pla}
+B.~Schottstaedt.
+\newblock Pla: A composer's idea of a language.
+\newblock {\em Computer Music Journal}, 7(1):11--20, 1983.
+
+\bibitem[Ver86]{csound}
+B.~Vercoe.
+\newblock Csound: A manual for the audio processing system and supporting
+  programs.
+\newblock Technical report, MIT Media Lab, 1986.
+
+\end{thebibliography}

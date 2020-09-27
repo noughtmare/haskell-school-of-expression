@@ -1,0 +1,63 @@
+\section{Introduction}
+\label{intro}
+
+{\em Haskore} is a collection of Haskell modules designed for
+expressing musical structures in the high-level, declarative style of
+{\em functional programming}.  In Haskore, musical objects consist of
+primitive notions such as notes and rests, operations to transform
+musical objects such as transpose and tempo-scaling, and operations to
+combine musical objects to form more complex ones, such as concurrent
+and sequential composition.  From these simple roots, much richer
+musical ideas can easily be developed.
+
+Haskore is a means for describing {\em music}---in particular Western
+Music---rather than {\em sound}.  It is not a vehicle for synthesizing
+sound produced by musical instruments, for example, although it does
+capture the way certain (real or imagined) instruments permit control
+of dynamics and articulation.
+
+Haskore also defines a notion of {\em literal performance} through
+which {\em observationally equivalent} musical objects can be
+determined.  From this basis many useful properties can be proved,
+such as commutative, associative, and distributive properties of
+various operators.  An {\em algebra of music} thus surfaces.
+
+In fact a key aspect of Haskore is that objects represent both {\em
+abstract musical ideas} and their {\em concrete implementations}.
+This means that when we prove some property about an object, that
+property is true about the music in the abstract {\em and} about its
+implementation.  Similarly, transformations that preserve musical
+meaning also preserve the behavior of their implementations.  For this
+reason Haskell is often called an {\em executable specification
+language}; i.e.~programs serve the role of mathematical specifications
+that are directly executable.
+
+Building on the results of the functional programming community's
+Haskell effort has several important advantages: First, and most
+obvious, we can avoid the difficulties involved in new programming
+language design, and at the same time take advantage of the many years
+of effort that went into the design of Haskell.  Second, the resulting
+system is both {\em extensible} (the user is free to add new features
+in substantive, creative ways) and {\em modifiable} (if the user
+doesn't like our approach to a particular musical idea, she is free to
+change it).
+
+In the remainder of this paper I assume that the reader is familar
+with the basics of functional programming and Haskell in particular.
+If not, I encourage reading at least {\em A Gentle Introduction to
+Haskell} \cite{haskell-tutorial} before proceeding.  I also assume
+some familiarity with {\em equational reasoning}; an excellent
+introductory text on this is \cite{birdwadler88}.
+
+
+\subsection{Acknowledgements}
+
+Many students have contributed to Haskore over the years, doing for
+credit what I didn't have the spare time to do!  I am indebted to them
+all: Amar Chaudhary, Syam Gadde, Bo Whong, and John Garvin, in
+particular.  Thanks also to Alastair Reid for implementing the first
+Midi-file writer, to Stefan Ratschan for porting Haskore to GHC, and
+to Matt Zamec for help with the Csound compatibility module.  I would
+also like to express sincere thanks to my friend and talented New
+Haven composer, Tom Makucevich, for being Haskore's most faithful
+user.

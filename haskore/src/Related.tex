@@ -1,0 +1,59 @@
+\section{Related and Future Research}
+\label{related}
+
+Many proposals have been put forth for programming languages targeted
+for computer music composition
+\cite{canon,pla,moxie,formula,fugue,scoresynth,formes,grame94},
+% common-music
+so many in fact that it would be difficult to describe them all here.
+None of them (perhaps surprisingly) are based on a {\em pure}
+functional language, with one exception: the recent work done by
+Orlarey et al.\ at GRAME \cite{grame94}, which uses a pure lambda
+calculus approach to music description, and bears some resemblance to
+our effort.  There are some other related approaches based on variants
+of Lisp, most notably Dannenberg's {\em Fugue} language \cite{fugue},
+in which operators similar to ours can be found but where the emphasis
+is more on instrument synthesis rather than note-oriented composition.
+Fugue also highlights the utility of lazy evaluation in certain
+contexts, but extra effort is needed to make this work in Lisp,
+whereas in a non-strict language such as Haskell it essentially comes
+``for free.''  Other efforts based on Lisp utilize Lisp primarily as a
+convenient vehicle for ``embedded language design,'' and the
+applicative nature of Lisp is not exploited well (for example, in
+Common Music the user will find a large number of macros which are
+difficult if not impossible to use in a functional style).
+
+We are not aware of any computer music language that has been shown to
+exhibit the kinds of algebraic properties that we have demonstrated
+for Haskore.  Indeed, none of the languages that we have investigated
+make a useful distinction between music and performance, a property
+that we find especially attractive about the Haskore design.  On the
+other hand, Balaban describes an abstract notion (apparently not yet a
+programming language) of ``music structure,'' and provides various
+operators that look similar to ours \cite{balaban92}.  In addition,
+she describes an operation called {\em flatten} that resembles our
+literal interpretation {\tt perform}.  It would be interesting to
+translate her ideas into Haskell; the match would likely be good.
+
+Perhaps surprisingly, the work that we find most closely related to
+ours is not about music at all: it is Henderson's {\em functional
+geometry}, a functional language approach to generating computer
+graphics \cite{henderson82}.  There we find a structure that is in
+spirit very similar to ours: most importantly, a clear distinction
+between object {\em description} and {\em interpretation} (which in
+this paper we have been calling musical objects and their
+performance).  A similar structure can be found in Arya's {\em
+functional animation} work \cite{arya94}.
+
+There are many interesting avenues to pursue with this research.  On
+the theoretical side, we need a deeper investigation of the algebraic
+structure of music, and would like to express certain modern theories
+of music in Haskore.  The possibility of expressing other scale types
+instead of the thus far unstated assumption of standard equal
+temperament scales is another area of investigation.  On the practical
+side, the potential of a graphical interface to Haskore is appealing.
+We are also interested in extending the methodology to sound
+synthesis.  Our primary goal currently, however, is to continue using
+Haskore as a vehicle for interesting algorithmic composition (for
+example, see \cite{hudakberger95}).
+

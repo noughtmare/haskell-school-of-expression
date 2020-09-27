@@ -1,0 +1,71 @@
+
+ 			 Haskore Music System
+			 --------------------
+
+This is the February 2000 release of Haskore (updated in 2007 and 2014
+for API changes), available from:
+
+  http://haskell.org/haskore
+
+This version improves on the previous release through limited support
+for Csound (thanks to Matt Zamec), the very popular computer music
+package written as a pre-procesor to C.  This support comes in two
+forms:
+
+-- There is a translator from Haskore to Csound score files, thus
+   providing another platform besides Midi on which to experience
+   your compositions.
+
+-- You can design new instruments, in the style of Csound's orchestra
+   files, using a special data type in Haskore.  A translator then
+   converts this data type into a Csound orchestra file.  Currently
+   support is provided for the basic synthesis elements --
+   oscillators, delay lines, basic filters, and basic effects --
+   but it is easy to add more of the (hundreds of) Csound primitives
+   if one desires.
+
+For more details, see Section 12 of the Tutorial.
+
+Haskore can also now be used under both latest Hugs (2006 version
+with -98 option) and GHC (version 6.6).
+
+The best way to use the system with Hugs is to drop the entire Haskore
+directory into Hugs/lib (replacing the one that's there).  All of the
+files except this README file are in the directory Src.
+
+Important files in the distribution:
+
+1) "Haskore.lhs" will load the entire basic Haskore system.  If your
+   Hugs has the proper paths set up, once you drop this directory into
+   Hugs/lib, you should be able to just say "import Haskore" and
+   everything should work correctly.
+2) Loading "HaskoreExamples.lhs" loads the above plus several other
+   modules containing useful demonstrations of "Haskore in Action".
+3) "tutorial.tex" is the root of the Haskore Tutorial, a literate
+   script that imports most other files in the directory.  
+   "turorial.ps" is the postscript version of this.
+
+This release builds upon the November 1998 version, which improved
+over previous releases in several ways:
+
+  1) You can now read MIDI files and convert them into Music values.
+  2) There is good support for percussion, based on the General Midi
+     percussion standard.
+  3) There are a number of new higher-level music constructions, the
+     most notable being functions for trills, and a parallel
+     composition operator that truncates the result to the shortest of
+     the two inputs.
+  4) A change in the underlying type for Durations, from Float to
+     Ratio Integer.  This is the only incompatible change.
+  5) Lots of code improvements.
+
+Comments, questions, suggestions, etc. can be sent to me at the
+address below.
+
+---
+Professor Paul Hudak                  
+Department of Computer Science         Office: (203) 432-4715
+Yale University                        FAX:    (203) 432-0593
+P.O. Box 208285                        email:  paul.hudak@yale.edu
+New Haven, CT 06520-8285
+WWW: http://www.cs.yale.edu/users/hudak-paul.html

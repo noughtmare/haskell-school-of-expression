@@ -1,0 +1,191 @@
+\section{Equivalence of Literal Performances}
+\label{equivalence}
+
+A {\em literal performance} is one in which no aesthetic
+interpretation is given to a musical object.  The function {\tt
+perform} in fact yields a literal performance; aesthetic nuances must
+be expressed explicitly using note and phrase attributes.
+
+There are many musical objects whose literal performances we expect to
+be {\em equivalent}.  For example, the following two musical objects
+are certainly not equal as data structures, but we would expect their
+literal performances to be identical:
+\begin{center}
+{\tt (m1 :+: m2) :+: (m3 :+: m4)} \\
+{\tt m1 :+: m2 :+: m3 :+: m4}
+\end{center}
+Thus we define a notion of equivalence:
+
+\paragraph{Definition:}
+Two musical objects {\tt m1} and {\tt m2} are {\em equivalent}, written
+\verb|m1|$\ \equiv\ $\verb|m2|, if and only if:
+\begin{center}
+($\forall$\verb|imap,c|)\ \ \ {\tt perform imap c m1 = perform imap c m2}
+\end{center}
+where ``\verb|=|'' is equality on values (which in Haskell is defined
+by the underlying equational logic).
+
+One of the most useful things we can do with this notion of
+equivalence is establish the validity of certain {\em transformations}
+on musical objects.  A transformation is {\em valid} if the result of
+the transformation is equivalent (in the sense defined above) to the
+original musical object; i.e.~it is ``meaning preserving.''  
+
+The most basic of these transformation we treat as {\em axioms} in an
+{\em algebra of music}.  For example:
+
+\begin{axiom}
+For any {\tt r1}, {\tt r2}, {\tt r3}, {\tt r4}, and {\tt m}:
+\begin{center}
+{\tt Tempo r1 r2 (Tempo r3 r4 m)} $\ \ \equiv\ \ $ {\tt Tempo (r1*r3) (r2*r4) m}
+\end{center}
+\end{axiom}
+
+To prove this axiom, we use conventional equational reasoning (for
+clarity we omit {\tt imap} and simplify the context to just {\tt dt}):
+\paragraph*{Proof:}
+\begin{verbatim} 
+perform dt (Tempo r1 r2 (Tempo r3 r4 m))
+= perform (r2*dt/r1) (Tempo r3 r4 m)       -- unfolding perform
+= perform (r4*(r2*dt/r1)/r3) m             -- unfolding perform
+= perform ((r2*r4)*dt/(r1*r3)) m           -- simple arithmetic
+= perform dt (Tempo (r1*r3) (r2*r4) m)     -- folding perform
+\end{verbatim} 
+
+Here is another useful transformation and its validity proof (for
+clarity in the proof we omit {\tt imap} and simplify the context to
+just {\tt (t,dt)}):
+
+\begin{axiom}
+For any {\tt r1}, {\tt r2}, {\tt m1}, and {\tt m2}:
+\begin{center}
+{\tt Tempo r1 r2 (m1 :+:\ m2)} $\ \ \equiv\ \ $ {\tt Tempo r1 r2 m1 :+:\ Tempo r1 r2 m2}
+\end{center}
+\end{axiom}
+In other words, {\em tempo scaling distributes over sequential
+composition}.
+\paragraph*{Proof:}
+\begin{verbatim} 
+perform (t,dt) (Tempo r1 r2 (m1 :+: m2))
+= perform (t,r2*dt/r1) (m1 :+: m2)                      -- unfolding perform
+= perform (t,r2*dt/r1) m1 ++ perform (t',r2*dt/r1) m2   -- unfolding perform
+= perform (t,dt) (Tempo r1 r2 m1) ++ 
+          perform (t',dt) (Tempo r1 r2 m2)              -- folding perform
+= perform (t,dt) (Tempo r1 r2 m1) ++ 
+          perform (t'',dt) (Tempo r1 r2 m2)             -- folding dur
+= perform (t,dt) (Tempo r1 r2 m1 :+: Tempo r1 r2 m2)    -- folding perform
+where t'  = t + (dur m1)*r2*dt/r1
+      t'' = t + (dur (Tempo r1 r2 m1))*dt
+\end{verbatim} 
+
+An even simpler axiom is given by:
+
+\begin{axiom}
+For any {\tt r} and {\tt m}:
+\begin{center}
+{\tt Tempo r r m} $\ \ \equiv\ \ $ {\tt m}
+\end{center}
+\end{axiom}
+In other words, {\em unit tempo scaling is the identity}.
+\paragraph*{Proof:}
+\begin{verbatim} 
+perform (t,dt) (Tempo r r m)
+= perform (t,r*dt/r) m                       -- unfolding perform
+= perform (t,dt) m                           -- simple arithmetic
+\end{verbatim} 
+
+Note that the above proofs, being used to establish axioms, all
+involve the definition of {\tt perform}.  In contrast, we can also
+establish {\em theorems} whose proofs involve only the axioms.  For
+example, Axioms 1, 2, and 3 are all needed to prove the following:
+\begin{theorem}
+For any {\tt r1}, {\tt r2}, {\tt m1}, and {\tt m2}:
+\begin{center}
+{\tt Tempo r1 r2 m1 :+:\ m2} $\ \ \equiv\ \ $ {\tt Tempo r1 r2 (m1 :+:\ Tempo r2 r1 m2)}
+\end{center}
+\end{theorem}
+\paragraph*{Proof:}
+\begin{verbatim} 
+Tempo r1 r2 (m1 :+: Tempo r2 r1 m2)
+= Tempo r1 r2 m1 :+: Tempo r1 r2 (Tempo r2 r1 m2)     -- by Axiom 1
+= Tempo r1 r2 m1 :+: Tempo (r1*r2) (r2*r1) m2         -- by Axiom 2
+= Tempo r1 r2 m1 :+: Tempo (r1*r2) (r1*r2) m2         -- simple arithmetic
+= Tempo r1 r2 m1 :+: m2                               -- by Axiom 3
+\end{verbatim} 
+For example, this fact justifies the equivalence of the two phrases
+shown in Figure \ref{equiv}.
+
+\begin{figure*}
+\centerline{
+\epsfysize=.6in 
+\epsfbox{Pics/equiv.eps}
+}
+\caption{Equivalent Phrases}
+\label{equiv}
+\end{figure*}
+
+Many other interesting transformations of Haskore musical objects can
+be stated and proved correct using equational reasoning.  We leave as
+an exercise for the reader the proof of the following axioms (which
+include the above axioms as special cases).
+
+\begin{axiom}
+{\tt Tempo} is {\em multiplicative} and {\tt Transpose} is {\em
+additive}.  That is, for any {\tt r1}, {\tt r2}, {\tt r3}, {\tt r4},
+{\tt p}, and {\tt m}:
+\begin{center}
+{\tt Tempo r1 r2 (Tempo r3 r4 m)} $\ \ \equiv\ \ $ {\tt Tempo (r1*r3) (r2*r4) m}\\
+{\tt Trans p1 (Trans p2 m)} $\ \ \equiv\ \ $ {\tt Trans (p1+p2) m}
+\end{center}
+\end{axiom}
+\begin{axiom}
+Function composition is {\em commutative} with respect to both tempo
+scaling and transposition.  That is, for any {\tt r1}, {\tt r2}, {\tt
+r3}, {\tt r4}, {\tt p1} and {\tt p2}:
+\begin{center}
+{\tt Tempo r1 r2 .\ Tempo r3 r4} $\ \ \equiv\ \ $ {\tt Tempo r3 r4 .\ Tempo r1 r2}\\
+{\tt Trans p1 .\ Trans p2} $\ \ \equiv\ \ $ {\tt Trans p2 .\ Trans p1}\\
+{\tt Tempo r1 r2 .\ Trans p1} $\ \ \equiv\ \ $ {\tt Trans p1 .\ Tempo r1 r2}\\
+\end{center}
+\end{axiom}
+\begin{axiom}
+Tempo scaling and transposition are {\em distributive} over both
+sequential and parallel composition.  That is, for any {\tt r1}, {\tt
+r2}, {\tt p}, {\tt m1}, and {\tt m2}:
+\begin{center}
+{\tt Tempo r1 r2 (m1 :+:\ m2)} $\ \ \equiv\ \ $ {\tt Tempo r1 r2 m1 :+:\ Tempo r1 r2 m2}\\
+{\tt Tempo r1 r2 (m1 :=:\ m2)} $\ \ \equiv\ \ $ {\tt Tempo r1 r2 m1 :=:\ Tempo r1 r2 m2}\\
+{\tt Trans p (m1 :+:\ m2)} $\ \ \equiv\ \ $ {\tt Trans p m1 :+:\ Trans p m2}\\
+{\tt Trans p (m1 :=:\ m2)} $\ \ \equiv\ \ $ {\tt Trans p m1 :=:\ Trans p m2}
+\end{center}
+\end{axiom}
+\begin{axiom}
+Sequential and parallel composition are {\em associative}.  That is,
+for any {\tt m0}, {\tt m1}, and {\tt m2}:
+\begin{center}
+{\tt m0 :+:\ (m1 :+:\ m2)} $\ \ \equiv\ \ $ {\tt (m0 :+:\ m1) :+:\ m2}\\
+{\tt m0 :=:\ (m1 :=:\ m2)} $\ \ \equiv\ \ $ {\tt (m0 :=:\ m1) :=:\ m2}
+\end{center}
+\end{axiom}
+\begin{axiom}
+Parallel composition is {\em commutative}.  That is, for any {\tt m0}
+and {\tt m1}:
+\begin{center}
+{\tt m0 :=:\ m1} $\ \ \equiv\ \ $ {\tt m1 :=:\ m0}
+\end{center}
+\end{axiom}
+\begin{axiom}
+{\tt Rest 0} is a {\em unit} for {\tt Tempo} and {\tt Trans}, and a
+{\em zero} for sequential and parallel composition.  That is, for any
+{\tt r1}, {\tt r2}, {\tt p}, and {\tt m}:
+\begin{center}
+{\tt Tempo r1 r2 (Rest 0)} $\ \ \equiv\ \ $ {\tt Rest 0}\\
+{\tt Trans p (Rest 0)} $\ \ \equiv\ \ $ {\tt Rest 0}\\
+{\tt m :+:\ Rest 0} $\ \ \equiv\ \ $ {\tt m} $\ \ \equiv\ \ $ {\tt Rest 0 :+:\ m}\\
+{\tt m :=:\ Rest 0} $\ \ \equiv\ \ $ {\tt m} $\ \ \equiv\ \ $ {\tt Rest 0 :=:\ m} 
+\end{center}
+\end{axiom}
+
+\begin{exercise} Establish the validity of each of the above axioms.
+\end{exercise}
+

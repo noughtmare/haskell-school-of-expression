@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>School of Expression example code</title>
+</head>
+
+<body>
+<h1>School of Expression example code</h1>
+
+This page contains the accompanying software to the <a
+href="http://www.cs.yale.edu/homes/hudak/SOE/">Haskell School of Expression</a> textbook by
+Paul Hudak. Here's the complete list of the code in the order of
+chapters:
+<p>
+<ol>
+<li><a href="../txt/Intro.txt">Problem Solving, Programming, and Calculation</a>
+<li><a href="Shape.lhs">A Module of Shapes: Part I</a>
+<li><a href="SimpleGraphics.lhs">Simple Graphics</a> (<a
+href="Snowflake.lhs">Snowflake</a>)
+<li><a href="Draw.lhs">Shapes II: Drawing Shapes</a>
+<li><a href="../txt/Poly.txt">Polymorphic and Higher-Order Functions</a>
+<li><a href="../txt/Perimeter.txt">Shapes III: Perimeters of Shapes</a>
+<li><a href="Trees.lhs">Trees</a>
+<li><a href="Region.lhs">A Module of Regions</a>
+<li><a href="../txt/Hof.txt">More About Higher-Order Functions</a>
+<li><a href="Picture.lhs">Drawing Regions</a>
+<li><a href="../txt/Induction.txt">Proof by Induction</a>
+<li><a href="../txt/Qualified-types.txt">Qualified Types</a>
+<li><a href="Animation.lhs">A Module of Simple Animations</a>
+<li><a href="Streams.lhs">Programming With Streams</a> (<a href="Memo.lhs">Memoization</a>)
+<li><a href="Fal.lhs">A Module of Reactive Animations</a>
+<li><a href="../txt/IOProc.txt">Communicating With the Outside World</a>
+<li><a href="Reactimate.lhs">Rendering Reactive Animations</a>
+<li><a href="../txt/Monads.txt">Higher-Order Types</a>
+<li><a href="Robot.lhs">An Imperative Robot Language</a>
+<li><a href="Music.lhs">Functional Music Composition</a>
+<li><a href="Perform.lhs">Interpreting Functional Music</a>
+<li><a href="MDL.lhs">From Performance to MIDI</a>
+<li><a href="../txt/List-tour.txt">A Tour of the PreludeList Module</a>
+<li><a href="../txt/Class-tour.txt">A Tour of Haskell's Standard Type Classes</a>
+<li>Appendix A. <a href="../txt/Bitans.txt">Built-in Types Are Not Special</a>
+<li>Appendix B. <a href="../txt/Patterns.txt">Pattern-Matching Details</a>
+<p>
+</ol>
+Some chapters contain incomplete code fragments and are not meant to
+be loaded by GHCi.  These are provided as .txt files.  
+
+<p> The remaining files are Haskell literate source code (.lhs).  You
+may load them into the latest version of
+<a href="http://www.haskell.org/platform/">Haskell Platform</a>.
+Double-click should do the loading automatically on Windows machines,
+otherwise you may navigate down to the directory of this document and then
+open the Haskell modules from there.
+</p>
+<h3>Update Notice (Aug 2014):</h3>
+<ul>
+<li>All code should now work with GHC 6.6.1 or later with OpenGL and 
+    <a href="https://hackage.haskell.org/package/GLFW">GLFW package</a>
+    for Haskell, which must be installed prior to running SOE. 
+</li>
+<li>For MacOS X, the EnableGUI trick no longer works for GHC 7 or
+    above. GHC can still compile and run GLFW or SOE programs, 
+    but if you must use GLFW or SOE within GHCi environment,
+    you'll need GHC version 7.8.3 or above, and load the program
+    like this:
+<pre>
+        ghc -fno-ghci-sandbox Picture.lhs
+</pre>
+</li>
+</ul>
+</body>
+</html>
