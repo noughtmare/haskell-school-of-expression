@@ -115,6 +115,7 @@ openWindowEx title position size (RedrawMode useDoubleBuffer) = do
   graphicVar <- newMVar (emptyGraphic, False)
   eventsChan <- newChan
   Just window <- GLFW.createWindow w h title Nothing Nothing
+  GLFW.makeContextCurrent (Just window)
   mapM_ GLFW.windowHint [GLFW.WindowHint'StencilBits (Just 8), GLFW.WindowHint'AlphaBits (Just 8)]
   modifyMVar_ opened (\_ -> return True)
   GL.shadeModel $= GL.Smooth
