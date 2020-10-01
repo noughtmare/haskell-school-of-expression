@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE LambdaCase #-}
 module SOE (
   runGraphics,
   Title,
@@ -58,7 +60,7 @@ import qualified Graphics.UI.GLFW as GLFW
 import qualified Graphics.Rendering.OpenGL as GL
 import Graphics.Rendering.OpenGL (($=), GLfloat)
 import System.IO.Unsafe
-
+import Control.Monad (unless)
 
 -------------------
 -- Window Functions
@@ -85,11 +87,16 @@ initialized = unsafePerformIO (newMVar False)
 {-# NOINLINE opened #-}
 opened = unsafePerformIO (newMVar False)
 
+colorUniform :: MVar (Maybe GL.UniformLocation)
+{-# NOINLINE colorUniform #-}
+colorUniform = unsafePerformIO (newMVar Nothing)
+
 initialize = do
   init <- readMVar initialized
   if init then return ()
     else do
       GLFW.init
+
       modifyMVar_ initialized (\_ -> return True)
       return ()
 
@@ -106,6 +113,52 @@ keyToChar key = do
   case mayName of
     Just [char] -> return (Just char)
     _ -> return Nothing
+
+compileShaders :: IO ()
+compileShaders = do
+  program <- GL.createProgram
+
+  vert <- GL.createShader GL.VertexShader
+  GL.shaderSourceBS vert
+    $= "#version 330\n\
+       \layout (location = 0) in vec3 Position;\n\
+       \void main() {\n\
+       \gl_Position = vec4(Position.x / 1000.0, Position.y / 1000.0, Position.z / 1000.0, 1.0);\n\
+       \}\n"
+  GL.compileShader vert
+  success <- GL.compileStatus vert
+  unless success $
+    putStrLn . ("Error compiling vertex shader: " ++) =<< GL.shaderInfoLog vert
+  GL.attachShader program vert
+
+  frag <- GL.createShader GL.FragmentShader
+  GL.shaderSourceBS frag
+    $= "#version 330\n\
+       \out vec4 FragColor;\n\
+       \uniform vec3 color;\n\
+       \void main() {\n\
+       \FragColor = vec4(color, 1.0);\n\
+       \}\n"
+  GL.compileShader frag
+  success <- GL.compileStatus frag
+  unless success $
+    putStrLn . ("Error compiling fragment shader: " ++) =<< GL.shaderInfoLog frag
+  GL.attachShader program frag
+
+  GL.linkProgram program
+  success <- GL.linkStatus program
+  unless success $
+    putStrLn . ("Error linking program: " ++) =<< GL.programInfoLog program
+
+  GL.validateProgram program
+  success <- GL.validateStatus program
+  unless success $
+    putStrLn . ("Error validating program: " ++) =<< GL.programInfoLog program
+
+  modifyMVar_ colorUniform (\_ -> Just <$> GL.uniformLocation program "color")
+
+  GL.currentProgram $= (Just program)
+
 
 -- pos is always ignored due to GLFW
 openWindowEx :: Title -> Maybe Point -> Maybe Size -> RedrawMode -> IO Window
@@ -151,6 +204,8 @@ openWindowEx title position size (RedrawMode useDoubleBuffer) = do
   GLFW.setWindowSizeCallback window (Just (\_ w h -> writeChan eventsChan (Resize (GL.Size (fromIntegral w) (fromIntegral h)))))
   GLFW.setWindowRefreshCallback window (Just (\_ -> writeChan eventsChan Refresh))
   GLFW.setWindowCloseCallback window (Just (\window -> closeWindow_ window eventsChan))
+
+  compileShaders
 
   return Window {
     graphicVar = graphicVar,
@@ -246,7 +301,11 @@ colorToRGB Yellow  = GL.Color3 1 1 0
 colorToRGB White   = GL.Color3 1 1 1
 
 withColor :: Color -> Graphic -> Graphic
-withColor color (Graphic g) = Graphic (GL.color (colorToRGB color) >> g)
+withColor color (Graphic g) = Graphic $ do
+  readMVar colorUniform >>= \case
+    Nothing -> return ()
+    Just colorU -> GL.uniform colorU $= colorToRGB color
+  g
 
 text :: Point -> String -> Graphic
 text (x,y) str = Graphic $ GL.preservingMatrix $ do
@@ -484,8 +543,8 @@ maybeGetWindowEvent win = do
           GL.matrixMode $= GL.Projection
           GL.loadIdentity
           GL.ortho2D 0 (realToFrac w) (realToFrac h) 0
-	  -- force a refresh, needed for OS X
-	  writeChan (eventsChan win) Refresh
+          -- force a refresh, needed for OS X
+          writeChan (eventsChan win) Refresh
           maybeGetWindowEvent win
         e -> return (Just e)
 
