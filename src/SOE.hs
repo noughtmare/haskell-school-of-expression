@@ -58,7 +58,7 @@ import qualified Graphics.UI.GLFW as GLFW
 import qualified Graphics.Rendering.OpenGL as GL
 import Graphics.Rendering.OpenGL (($=), GLfloat)
 import System.IO.Unsafe
-
+import SOE.FreeType
 
 -------------------
 -- Window Functions
@@ -84,6 +84,10 @@ initialized, opened :: MVar Bool
 initialized = unsafePerformIO (newMVar False)
 {-# NOINLINE opened #-}
 opened = unsafePerformIO (newMVar False)
+
+fontTexture :: MVar (Maybe GL.TextureObject)
+{-# NOINLINE fontTexture #-}
+fontTexture = unsafePerformIO (newMVar Nothing)
 
 initialize = do
   init <- readMVar initialized
@@ -134,7 +138,7 @@ openWindowEx title position size (RedrawMode useDoubleBuffer) = do
   let motionCallback _ x y =
         writeChan eventsChan MouseMove { pt = (round x, round y) }
   GLFW.setCursorPosCallback window (Just motionCallback)
-      
+
   GLFW.setKeyCallback window (Just (\_ key _ state _ -> do
     mayChar <- keyToChar key
     case mayChar of
@@ -169,9 +173,9 @@ clearWindow :: Window -> IO ()
 clearWindow win = setGraphic win (Graphic (return ()))
 
 drawInWindow :: Window -> Graphic -> IO ()
-drawInWindow win graphic = 
-  modifyMVar_ (graphicVar win) (\ (g, _) -> 
-    return (overGraphic graphic g, True)) 
+drawInWindow win graphic =
+  modifyMVar_ (graphicVar win) (\ (g, _) ->
+    return (overGraphic graphic g, True))
 
 -- if window is marked as dirty, mark it clean, draw and swap buffer;
 -- otherwise do nothing.
@@ -190,7 +194,7 @@ drawInWindowNow win graphic = do
 -- display in current Window.
 setGraphic :: Window -> Graphic -> IO ()
 setGraphic win graphic = do
-  modifyMVar_ (graphicVar win) (\_ -> 
+  modifyMVar_ (graphicVar win) (\_ ->
     return (overGraphic graphic emptyGraphic, True))
 
 closeWindow :: Window -> IO ()
@@ -227,7 +231,7 @@ data Color = Black
 type Angle = GLfloat
 
 emptyGraphic :: Graphic
-emptyGraphic = Graphic $ do 
+emptyGraphic = Graphic $ do
   GL.clearColor $= GL.Color4 0 0 0 0
   GL.clear [GL.ColorBuffer, GL.StencilBuffer]
 
@@ -254,7 +258,7 @@ text :: Point -> String -> Graphic
 text (x,y) str = Graphic $ GL.preservingMatrix $ do
   GL.translate (GL.Vector3 (fromIntegral x) (fromIntegral y + 16) (0::GLfloat))
   GL.scale 1 (-1) (1::GLfloat)
-  return () -- GLFW.renderString GLFW.Fixed8x16 str
+  renderString str
 
 type Point = (Int, Int)
 
@@ -264,9 +268,9 @@ ellipse pt1 pt2 = Graphic $ GL.preservingMatrix $ do
       (r1, r2) = (width / 2, height / 2)
   GL.translate (GL.Vector3 (x + r1) (y + r2) 0)
   GL.renderPrimitive GL.Polygon (circle r1 r2 0 (2 * pi) (20 / (r1 + r2)))
-      
+
 shearEllipse :: Point -> Point -> Point -> Graphic
-shearEllipse p0 p1 p2 = Graphic $ 
+shearEllipse p0 p1 p2 = Graphic $
   let (x0,y0) = fromPoint p0
       (x1,y1, w, h) = normaliseBounds p1 p2
       (x2,y2) = (x1 + w, y1 + h)
@@ -279,24 +283,24 @@ shearEllipse p0 p1 p2 = Graphic $
       pts = [ (x + c*dx1 + s*dx2, y + c*dy1 + s*dy2)
             | (c,s) <- cos'n'sins ]
       cos'n'sins = [ (cos a, sin a) | a <- segment 0 (2 * pi) (40 / (w + h))]
-  in GL.renderPrimitive GL.Polygon $ 
+  in GL.renderPrimitive GL.Polygon $
         mapM_ (\ (x, y) -> GL.vertex (vertex3 x y 0)) pts
 
 line :: Point -> Point -> Graphic
-line (x1, y1) (x2, y2) = Graphic $ 
+line (x1, y1) (x2, y2) = Graphic $
   GL.renderPrimitive GL.LineStrip (do
     GL.vertex (vertex3 (fromIntegral x1) (fromIntegral y1) 0)
     GL.vertex (vertex3 (fromIntegral x2) (fromIntegral y2) 0))
 
 polygon :: [Point] -> Graphic
 polygon ps = Graphic $ do
-  GL.renderPrimitive GL.Polygon (foldr1 (>>) (map 
+  GL.renderPrimitive GL.Polygon (foldr1 (>>) (map
     (\ (x, y) -> GL.vertex (vertex3 (fromIntegral x) (fromIntegral y) 0))
     ps))
 
 polyline :: [Point] -> Graphic
-polyline ps = Graphic $ 
-  GL.renderPrimitive GL.LineStrip (foldr1 (>>) (map 
+polyline ps = Graphic $
+  GL.renderPrimitive GL.LineStrip (foldr1 (>>) (map
     (\ (x, y) -> GL.vertex (vertex3 (fromIntegral x) (fromIntegral y) 0))
     ps))
 
@@ -306,7 +310,7 @@ polyBezier ps = polyline (map (bezier ps) (segment 0 1 dt))
   where
     dt = 1 / (lineLength ps / 8)
     lineLength :: [Point] -> GLfloat
-    lineLength ((x1,y1):(x2,y2):ps) = 
+    lineLength ((x1,y1):(x2,y2):ps) =
       let dx = x2 - x1
           dy = y2 - y1
       in sqrt (fromIntegral (dx * dx + dy * dy)) + lineLength ((x2,y2):ps)
@@ -314,7 +318,7 @@ polyBezier ps = polyline (map (bezier ps) (segment 0 1 dt))
 
 bezier :: [Point] -> GLfloat -> Point
 bezier [(x1,y1)] t = (x1, y1)
-bezier [(x1,y1),(x2,y2)] t = (x1 + truncate (fromIntegral (x2 - x1) * t), 
+bezier [(x1,y1),(x2,y2)] t = (x1 + truncate (fromIntegral (x2 - x1) * t),
                               y1 + truncate (fromIntegral (y2 - y1) * t))
 bezier ps t = bezier (map (\ (p, q) -> bezier [p,q] t) (zip ps (tail ps))) t
 
@@ -323,7 +327,7 @@ arc pt1 pt2 start extent = Graphic $ do
   let (x, y, width, height) = normaliseBounds pt1 pt2
       (r1, r2) = (width / 2, height / 2)
   GL.translate (GL.Vector3 (x + r1) (y + r2) 0)
-  GL.renderPrimitive GL.LineStrip (circle r1 r2 
+  GL.renderPrimitive GL.LineStrip (circle r1 r2
     (-(start + extent) * pi / 180) (-start * pi / 180) (20 / (r1 + r2)))
 
 -------------------
@@ -332,9 +336,9 @@ arc pt1 pt2 start extent = Graphic $ do
 
 createRectangle :: Point -> Point -> Region
 createRectangle pt1 pt2 =
-  let (x,y,width,height) = normaliseBounds' pt1 pt2 
+  let (x,y,width,height) = normaliseBounds' pt1 pt2
       [x0, y0, x1, y1] = map fromIntegral [x, y, x + width, y + height]
-      drawing = 
+      drawing =
         GL.renderPrimitive GL.Quads (do
         GL.vertex (vertex3 x0 y0 0)
         GL.vertex (vertex3 x1 y0 0)
@@ -345,7 +349,7 @@ createRectangle pt1 pt2 =
 createEllipse :: Point -> Point -> Region
 createEllipse pt1 pt2 =
   let (x,y,width,height) = normaliseBounds' pt1 pt2
-      drawing = 
+      drawing =
         GL.preservingMatrix $ do
           let (x, y, width, height) = normaliseBounds pt1 pt2
               (r1, r2) = (width / 2, height / 2)
@@ -359,7 +363,7 @@ createPolygon ps =
   let (minx, maxx, miny, maxy) = (minimum (map fst ps), maximum (map fst ps),
                                   minimum (map snd ps), maximum (map snd ps))
       drawing = do
-        GL.renderPrimitive GL.Polygon (foldr1 (>>) (map 
+        GL.renderPrimitive GL.Polygon (foldr1 (>>) (map
           (\ (x, y) -> GL.vertex (vertex3 (fromIntegral x) (fromIntegral y) 0))
           ps))
    in [[Pos ("P"++show ps, drawing)]]
@@ -383,7 +387,7 @@ disjuction xs ys = xs ++ ys
 negTerm [] = []
 negTerm xs = foldl1 conjuction (map negA xs)
   where
-    negA :: Conjuction -> Region 
+    negA :: Conjuction -> Region
     negA ys = map negS ys
     negS :: Atom -> Conjuction
     negS (Pos i) = [Neg i]
@@ -471,7 +475,7 @@ maybeGetWindowEvent :: Window -> IO (Maybe Event)
 maybeGetWindowEvent win = do
   updateWindowIfDirty win
   noEvents <- isEmptyChan (eventsChan win)
-  if noEvents 
+  if noEvents
     then GLFW.waitEventsTimeout 0.01 >> GLFW.pollEvents >> return Nothing
     else do
       event <- readChan (eventsChan win)
@@ -486,8 +490,8 @@ maybeGetWindowEvent win = do
           GL.matrixMode $= GL.Projection
           GL.loadIdentity
           GL.ortho2D 0 (realToFrac w) (realToFrac h) 0
-	  -- force a refresh, needed for OS X
-	  writeChan (eventsChan win) Refresh
+          -- force a refresh, needed for OS X
+          writeChan (eventsChan win) Refresh
           maybeGetWindowEvent win
         e -> return (Just e)
 
@@ -567,4 +571,3 @@ circle r1 r2 start stop step =
 
 segment start stop step = ts start
   where ts i = if i >= stop then [stop] else (i : ts (i + step))
-

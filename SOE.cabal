@@ -20,6 +20,8 @@ build-type:         Simple
 extra-source-files:
   CHANGELOG.md
   README
+data-files:
+  fonts/DejaVuSans.ttf
 
 library
   exposed-modules:
@@ -39,6 +41,7 @@ library
     Snowflake
     Concurrent
     SimpleGraphics
+    SOE.FreeType
 
   -- other-extensions:
   build-depends:
@@ -49,6 +52,7 @@ library
     , OpenGL
     , stm
     , array
+    , freetype2
 
   hs-source-dirs:   src
   default-language: Haskell2010
