@@ -125,6 +125,8 @@ openWindowEx title position size (RedrawMode useDoubleBuffer) = do
   GL.blendFunc $= (GL.SrcAlpha, GL.OneMinusSrcAlpha)
   GL.lineWidth $= 1.5
 
+  writeChan eventsChan (Resize (GL.Size (fromIntegral w) (fromIntegral h)))
+
   -- this will hang on Windows
   -- let updateWindow = readMVar graphicVar >>= (\(Graphic g) -> g >> GLFW.swapBuffers)
   -- GLFW.windowRefreshCallback $= updateWindow
