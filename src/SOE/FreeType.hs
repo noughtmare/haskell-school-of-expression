@@ -55,12 +55,12 @@ loadFont = do
       GL.Texture2D
       GL.NoProxy
       0
-      GL.R8
+      GL.Luminance'
       (GL.TextureSize2D (fromIntegral (bWidth bitmap))
                         (fromIntegral (bRows bitmap))
       )
       0
-      (GL.PixelData GL.Red GL.UnsignedByte (bBuffer bitmap))
+      (GL.PixelData GL.Luminance GL.UnsignedByte (bBuffer bitmap))
     GL.textureWrapMode GL.Texture2D GL.S $= (GL.Repeated, GL.ClampToEdge)
     GL.textureWrapMode GL.Texture2D GL.T $= (GL.Repeated, GL.ClampToEdge)
     GL.textureFilter GL.Texture2D $= ((GL.Linear', Nothing), GL.Linear')
