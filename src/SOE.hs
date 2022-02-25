@@ -269,7 +269,7 @@ ellipse pt1 pt2 = Graphic $ GL.preservingMatrix $ do
   let (x, y, width, height) = normaliseBounds pt1 pt2
       (r1, r2) = (width / 2, height / 2)
   GL.translate (GL.Vector3 (x + r1) (y + r2) 0)
-  GL.renderPrimitive GL.Polygon (circle r1 r2 0 (2 * pi) (20 / (r1 + r2)))
+  GL.renderPrimitive GL.Polygon (circle r1 r2 0 (2 * pi) (5 / (r1 + r2)))
 
 shearEllipse :: Point -> Point -> Point -> Graphic
 shearEllipse p0 p1 p2 = Graphic $
