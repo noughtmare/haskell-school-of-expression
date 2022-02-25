@@ -42,6 +42,8 @@ library
     Concurrent
     SimpleGraphics
     SOE.FreeType
+  other-modules:
+    Paths_SOE
 
   -- other-extensions:
   build-depends:

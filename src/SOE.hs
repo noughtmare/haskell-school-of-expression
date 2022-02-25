@@ -59,6 +59,7 @@ import qualified Graphics.Rendering.OpenGL as GL
 import Graphics.Rendering.OpenGL (($=), GLfloat)
 import System.IO.Unsafe
 import SOE.FreeType
+import Control.Monad (unless)
 
 -------------------
 -- Window Functions
@@ -202,9 +203,10 @@ closeWindow win = closeWindow_ (glfwWindow win) (eventsChan win)
 
 closeWindow_ window chan = do
   writeChan chan Closed
-  modifyMVar_ opened (\_ -> return False)
-  GLFW.destroyWindow window
-  GLFW.pollEvents
+  alreadyClosed <- modifyMVar opened (\x -> return (False, x))
+  unless alreadyClosed $ do
+    GLFW.destroyWindow window
+    GLFW.pollEvents
 
 --------------------
 -- Drawing Functions
