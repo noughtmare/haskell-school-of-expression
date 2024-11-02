@@ -47,7 +47,7 @@ library
 
   -- other-extensions:
   build-depends:
-      base      >=4.12 && <4.16
+      base      >=4.12 && <4.19
     , ghc-prim
     , GLFW-b
     , old-time
